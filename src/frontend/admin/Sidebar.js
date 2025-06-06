@@ -18,17 +18,23 @@ const Sidebar = ({ selected }) => {
 
     return (
         <div className="sidebar">
-            <div className="sidebar-title">관리자</div>
-            {menuItems.map(item => (
-                <div
-                    key={item.key}
-                    className={`sidebar-item ${location.pathname === item.path ? 'active' : ''}`}
-                    onClick={() => navigate(item.path)}
-                >
-                    <span className="icon">{item.icon}</span>
-                    <span className="label">{item.label}</span>
-                </div>
-            ))}
+        <div
+            className="sidebar-title"
+            onClick={() => navigate('/')}
+            style={{ cursor: 'pointer' }}
+        >
+            관리자
+        </div>
+        {menuItems.map(item => (
+            <div
+            key={item.key}
+            className={`sidebar-item ${location.pathname === item.path ? 'active' : ''}`}
+            onClick={() => navigate(item.path)}
+            >
+            <span className="icon">{item.icon}</span>
+            <span className="label">{item.label}</span>
+            </div>
+        ))}
         </div>
     );
 };

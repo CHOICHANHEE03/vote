@@ -69,6 +69,14 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, []);
 
+useEffect(() => {
+  const slider = setInterval(() => {
+    setCurrentBanner(prev => (prev + 1) % bannerImages.length);
+  }, 3000); // 3초마다 넘김
+
+  return () => clearInterval(slider);
+}, []);
+
   const donutStyle = {
     background: `conic-gradient(#4caf50 ${voteRate}%, #ccc ${voteRate}% 100%)`,
     transition: 'background 1s ease-in-out'
