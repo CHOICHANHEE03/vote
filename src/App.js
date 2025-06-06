@@ -18,6 +18,7 @@ import RealTime from './frontend/admin/RealTime';
 import Products from './frontend/admin/Products';
 import ProducksList from './frontend/admin/ProducksList';
 import VoteResult from './frontend/admin/VoteResult';
+import Result from './frontend/page/Result';
 
 
 
@@ -53,6 +54,7 @@ const Layout = () => {
         <Route path="/Pledge" element={<Pledge />} />
         <Route path="/Vote" element={<Vote />} />
         <Route path="/Store" element={<Store />} />
+        <Route path="/Result" element={<Result />} />
 
         {/* 아래는 관리자 전용 페이지들 */}
         <Route path="/admin/AdminLogin" element={<AdminLogin />} />
@@ -60,9 +62,9 @@ const Layout = () => {
         <Route path="/admin/RegisterCandidate" element={<RegisterCandidate />} />
         <Route path="/admin/CandidateList" element={<CandidateList />} />
         <Route path="/admin/RealTime" element={<RealTime />} />
-        <Route path='admin/Products' element={<Products />} />
-        <Route path='admin/ProductsList' element={<ProducksList />} />
-        <Route path='admin/VoteResult' element={<VoteResult />} />
+        <Route path='/admin/Products' element={<Products />} />
+        <Route path='/admin/ProductsList' element={<ProducksList />} />
+        <Route path='/admin/VoteResult' element={<VoteResult />} />
       </Routes>
       {!isAdminPath && <Footer />}
     </>
