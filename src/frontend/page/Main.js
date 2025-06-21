@@ -22,52 +22,49 @@ const candidates = [
 function Main() {
   const [currentBanner, setCurrentBanner] = useState(0);
   const [voteRate, setVoteRate] = useState(0);
-const [startedAt, setStartedAt] = useState('');
-const [endedAt, setEndedAt] = useState('');
+  const [startedAt, setStartedAt] = useState('');
+  const [endedAt, setEndedAt] = useState('');
 
-const formatDate = (dateObj) => {
-  if (!(dateObj instanceof Date)) return '';
-  return `${dateObj.getFullYear()}년 ${String(dateObj.getMonth() + 1).padStart(2, '0')}월 ${String(dateObj.getDate()).padStart(2, '0')}일 ${String(dateObj.getHours()).padStart(2, '0')}시 ${String(dateObj.getMinutes()).padStart(2, '0')}분`;
-};
+  // 배너 자동 순환
+  useEffect(() => {
+    const bannerInterval = setInterval(() => {
+      setCurrentBanner(prev => (prev + 1) % bannerImages.length);
+    }, 3000);
+    return () => clearInterval(bannerInterval);
+  }, []);
 
-useEffect(() => {
-  const fetchVoteRate = async () => {
-    try {
-      const response = await fetch("http://192.168.56.101:8001/public/votingStatus", {
-        method: 'GET',
-        headers: { 'Cache-Control': 'no-cache' }
-      });
-
-      let data = await response.json();
-
-      if (typeof data === 'string') {
-        data = JSON.parse(data);
-      }
-
-      console.log("✅ 투표율 응답 데이터:", data);
-
-      if (data && typeof data === 'object') {
-        if ('participationRate' in data) {
-          const rate = parseFloat(data.participationRate.replace('%', ''));
+  useEffect(() => {
+    const fetchVoteRate = async () => {
+      try {
+        const response = await fetch("http://192.168.56.101:8001/public/votingStatus", {
+          method: 'GET',
+          headers: { 'Cache-Control': 'no-cache' }
+        });
+        let data = await response.json();
+        if (typeof data === 'string') data = JSON.parse(data);
+        if (data.participationRate) {
+          const rate = parseFloat(data.participationRate.replace('%',''));
           if (!isNaN(rate)) setVoteRate(rate);
         }
-
         if (data.initializedAt && data.durationMinutes) {
           const start = new Date(data.initializedAt);
           const end = new Date(start.getTime() + data.durationMinutes * 60000);
           setStartedAt(start);
           setEndedAt(end);
         }
+      } catch (error) {
+        console.error("실시간 투표율 불러오기 실패:", error);
       }
-    } catch (error) {
-      console.error("실시간 투표율 불러오기 실패:", error);
-    }
-  };
+    };
+    fetchVoteRate();
+    const iv = setInterval(fetchVoteRate, 10000);
+    return () => clearInterval(iv);
+  }, []);
 
-  fetchVoteRate();
-  const interval = setInterval(fetchVoteRate, 10000);
-  return () => clearInterval(interval);
-}, []);
+  const formatDate = dateObj => {
+    if (!(dateObj instanceof Date)) return '';
+    return `${dateObj.getFullYear()}년 ${String(dateObj.getMonth()+1).padStart(2,'0')}월 ${String(dateObj.getDate()).padStart(2,'0')}일 ${String(dateObj.getHours()).padStart(2,'0')}시 ${String(dateObj.getMinutes()).padStart(2,'0')}분`;
+  };
 
 useEffect(() => {
   const slider = setInterval(() => {
@@ -85,14 +82,17 @@ useEffect(() => {
   return (
     <div className="main-container">
       <div className="banner">
-        <img src={bannerImages[currentBanner]} alt="배너" className="banner-img" />
+        <img
+          src={bannerImages[currentBanner]}
+          alt="배너"
+          className="banner-img"
+        />
       </div>
 
       <h2 className="section-title">21대 대통령 선거 후보자</h2>
-
       <div className="candidate-grid-wrapper">
         <div className="candidate-grid">
-          {candidates.map((c) => (
+          {candidates.map(c => (
             <div key={c.id} className="candidate-wrapper">
               <div className="candidate-card">
                 <div className="image-box">
